@@ -1,5 +1,7 @@
 import selenium
 from selenium.webdriver import Chrome, ChromeOptions
+import io
+from PIL import Image
 try:
     """developer in git env"""
     from apigateway_credentials import awsgateway_url, awsgateway_apikey
@@ -133,12 +135,31 @@ def example_of_changing_windowsize():
     print(result, type(result))
 
 
+def resize_screenshot(self):
+    self.get("https://github.com/umihico")
+    img_png = self.get_screenshot_as_png()
+    img_io = io.BytesIO(img_png)
+    img = Image.open(img_io)
+    image.thumbnail((500, 500), Image.LANCZOS)
+    return image
+
+
+def example_of_resize_screenshot():
+    chrome = Chromeless(awsgateway_url, awsgateway_apikey)
+    chrome.attach_method(resize_screenshot)
+    chrome.activate_library('import io')
+    chrome.activate_library('from PIL import Image')
+    image = chrome.resize_screenshot()
+    image.save("screenshot.png")
+
+
 if __name__ == '__main__':
-    example_of_get_title()
-    example_of_get_list()
-    example_of_get_title_letter_num()
-    example_of_get_screenshot()
-    example_of_default_method()
-    example_of_twice_called_error()
-    example_of_cause_NoSuchElementException()
-    example_of_changing_windowsize()
+    # example_of_get_title()
+    # example_of_get_list()
+    # example_of_get_title_letter_num()
+    # example_of_get_screenshot()
+    # example_of_default_method()
+    # example_of_twice_called_error()
+    # example_of_cause_NoSuchElementException()
+    # example_of_changing_windowsize()
+    example_of_resize_screenshot()

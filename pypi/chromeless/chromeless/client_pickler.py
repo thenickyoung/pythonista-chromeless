@@ -5,10 +5,11 @@ import base64
 import zlib
 
 
-def _dump_codes(called_name_as_method, arg, kwargs, stored_funcs, chrome_options=None):
+def _dump_codes(libraries, called_name_as_method, arg, kwargs, stored_funcs, chrome_options):
     dumped_funcs = {name: marshal.dumps(
         func.__code__) for name, func in stored_funcs.items()}
-    pickled_data = pickle.dumps((called_name_as_method, arg, kwargs, dumped_funcs, chrome_options))
+    pickled_data = pickle.dumps((libraries, called_name_as_method, arg,
+                                 kwargs, dumped_funcs, chrome_options))
     compressed_data = zlib.compress(pickled_data)
     base64str_data = base64.b64encode(compressed_data).decode()
     return base64str_data

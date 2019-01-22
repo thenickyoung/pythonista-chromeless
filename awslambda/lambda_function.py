@@ -5,6 +5,8 @@ import traceback
 from pprint import pprint
 from server_pickler import load_methods, pickle_result
 from chrome_options_handler import gen_default_chrome_options
+from PIL import _imaging
+from PIL import Image
 
 
 def gen_chrome(chrome_options=None):
@@ -18,9 +20,15 @@ def lambda_handler(event, context):
     try:
         if event["httpMethod"] == "POST":
             # print(event["body"])
-            called_name_as_method, arg, kwargs, funcs, chrome_options = load_methods(event["body"])
+            libraries, called_name_as_method, arg, kwargs, funcs, chrome_options = load_methods(
+                event["body"])
         else:
             raise Exception(f"httpMethod is {event['httpMethod']}, not 'POST'")
+        try:
+            for library_command in libraries:
+                exec(library_command, globals())
+        except Exception as e:
+            raise Exception(f"{e} in lambda")
         for name, func in funcs.items():
             setattr(Chrome, name, func)
         chrome = gen_chrome(chrome_options)

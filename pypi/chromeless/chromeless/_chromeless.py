@@ -13,11 +13,16 @@ class Chromeless():
         self.gateway_url = gateway_url
         self.headers = {"x-api-key": apikey}
         self.stored_funcs = {}
+        self.libraries = []
         self.is_submitted = False
         self.chrome_options = chrome_options
 
     def attach_method(self, func):
         self.stored_funcs[func.__name__] = func
+
+    def activate_library(self, command="import time"):
+        exec(command, locals())  # check the command works fine
+        self.libraries.append(command)
 
     def __getattr__(self, methodname):
         "this is the main method"
@@ -31,7 +36,7 @@ class Chromeless():
         self.is_submitted = True
         arg = arg or tuple()
         kwargs = kwargs or dict()
-        data = _dump_codes(self.called_name_as_method, arg, kwargs,
+        data = _dump_codes(self.libraries, self.called_name_as_method, arg, kwargs,
                            self.stored_funcs, self.chrome_options)
         response = requests.post(self.gateway_url, data=data, headers=self.headers)
         body = response.text
